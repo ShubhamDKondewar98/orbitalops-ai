@@ -1,0 +1,157 @@
+================================================================================
+AETHER-1 MISSION — INCIDENT REPORT SUMMARIES
+(Condensed format for knowledge base coverage)
+================================================================================
+
+================================================================================
+INCIDENT REPORT IR-006 — Battery Depletion During Extended Eclipse
+================================================================================
+Report ID       : IR-006
+Date            : 2023-04-17
+Mission Day     : 82
+Severity        : CRITICAL
+System Affected : Power System
+Status          : RESOLVED
+
+Summary:
+AETHER-1 entered an unplanned extended eclipse period lasting 94 minutes
+(nominal maximum: 72 minutes) due to an orbital perturbation. Battery charge
+depleted to 38% — below the 40% WARNING threshold. Safe mode was entered
+automatically at 35% charge.
+
+Telemetry at Incident:
+  Battery Charge Level  : 38% (WARNING), dropped to 32% at worst point
+  Solar Panel Output    : 0W (eclipse — expected)
+  Battery Temperature   : 22°C (NORMAL — cold due to eclipse shadow)
+  Signal Strength       : -78dBm (NORMAL)
+
+Root Cause:
+  Orbital perturbation extended eclipse duration by 22 minutes beyond
+  prediction. Power budget had no margin for extended eclipse scenarios.
+
+Actions Taken:
+  1. Safe mode triggered automatically at 35% battery charge
+  2. All non-essential systems powered down
+  3. Solar charging resumed on eclipse exit — full charge restored in 3.5 hours
+  4. Orbital model updated with perturbation correction
+
+Lessons Learned:
+  Power budget must include 25-minute eclipse extension margin.
+  Automated safe mode entry at 35% charge was correct and effective.
+  Eclipse duration predictions must include uncertainty margin in planning.
+
+================================================================================
+INCIDENT REPORT IR-007 — CPU Temperature Spike During Communication Blackout
+================================================================================
+Report ID       : IR-007
+Date            : 2023-04-24
+Mission Day     : 89
+Severity        : WARNING
+System Affected : Onboard Computing / Communications
+Status          : RESOLVED
+
+Summary:
+During a planned 12-minute communication blackout window (ground station
+handover), AETHER-1 CPU temperature elevated to 66°C while executing
+autonomous data compression tasks. Temperature self-resolved on task
+completion before ground contact resumed.
+
+Telemetry at Incident:
+  CPU Temperature       : 66°C (WARNING)
+  Data Transmission Rate: 0 kbps (planned blackout)
+  Attitude Stability    : ±1.2 degrees (NORMAL)
+  Battery Temperature   : 33°C (NORMAL)
+
+Root Cause:
+  High-compression data processing tasks were scheduled during communication
+  blackout window without CPU thermal budget assessment. No attitude or
+  thermal impact — self-resolving event.
+
+Actions Taken:
+  1. No immediate action required — self-resolving
+  2. Task scheduler updated to include CPU thermal budget check
+  3. High-computation tasks flagged for thermal pre-assessment
+
+Lessons Learned:
+  Autonomous operations during blackout windows need thermal budget validation.
+  Not all CPU temperature events require ground intervention if trending down.
+
+================================================================================
+INCIDENT REPORT IR-008 — Thruster Performance Degradation
+================================================================================
+Report ID       : IR-008
+Date            : 2023-05-06
+Mission Day     : 101
+Severity        : WARNING
+System Affected : Propulsion
+Status          : RESOLVED
+
+Summary:
+Scheduled orbital correction burn produced 12% less delta-V than calculated,
+indicating thruster performance degradation. Fuel pressure was nominal.
+Investigation identified partial thruster nozzle contamination.
+
+Telemetry at Incident:
+  Fuel Pressure         : 251 kPa (NORMAL)
+  Velocity              : 7.58 km/s (WARNING — below expected post-burn velocity)
+  Attitude Stability    : ±0.8 degrees (NORMAL)
+  Battery Charge Level  : 78% (NORMAL)
+
+Root Cause:
+  Thruster nozzle contamination from residual propellant crystallization
+  reduced effective thrust by approximately 12%. Fuel pressure remained
+  normal as the restriction was at the nozzle, not the supply line.
+
+Actions Taken:
+  1. Executed nozzle purge and thermal cycling procedure
+  2. Follow-up burn executed to achieve target orbital parameters
+  3. Thruster efficiency monitoring added to post-burn assessment protocol
+
+Lessons Learned:
+  Velocity post-burn comparison is essential for thruster health assessment.
+  Normal fuel pressure does not guarantee normal thruster performance.
+  Thruster nozzle contamination and supply line issues are distinct failure modes.
+
+================================================================================
+INCIDENT REPORT IR-009 — Signal Degradation During Solar Storm
+================================================================================
+Report ID       : IR-009
+Date            : 2023-05-29
+Mission Day     : 124
+Severity        : WARNING
+System Affected : Communications
+Status          : RESOLVED
+
+Summary:
+A moderate solar storm event caused signal strength degradation over a
+6-hour period. Unlike attitude-related signal loss, this event affected
+all spacecraft in the constellation equally and was externally caused.
+
+Telemetry at Incident:
+  Signal Strength       : -94dBm (WARNING) — peak degradation -101dBm
+  Data Transmission Rate: 28 kbps (WARNING)
+  Attitude Stability    : ±0.7 degrees (NORMAL)
+  Solar Panel Output    : 228W (elevated due to solar activity)
+
+Root Cause:
+  Solar storm Class M2.3 caused ionospheric disturbance affecting radio
+  frequency propagation. Solar panel output was elevated (228W) due to
+  increased solar radiation — key differentiator from attitude-related events.
+
+Actions Taken:
+  1. Switched to X-band for improved storm penetration
+  2. Reduced data transmission rate to 20 kbps for signal stability
+  3. Suspended non-essential telemetry to preserve command channel integrity
+  4. Restored normal operations after storm passage (6 hours)
+
+Lessons Learned:
+  Solar storm signal degradation is distinguished from attitude-related loss by:
+  — Attitude stability remains nominal
+  — Solar panel output is elevated (not degraded)
+  — Degradation is gradual and correlated with space weather events
+  Space weather monitoring should be integrated into mission operations.
+  X-band performs better than S-band during ionospheric disturbances.
+
+================================================================================
+END OF INCIDENT REPORT SUMMARIES IR-006 TO IR-009
+================================================================================

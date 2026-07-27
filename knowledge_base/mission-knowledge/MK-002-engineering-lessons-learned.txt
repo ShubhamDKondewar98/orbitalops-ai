@@ -1,0 +1,179 @@
+================================================================================
+AETHER-1 MISSION — ENGINEERING LESSONS LEARNED COMPENDIUM
+================================================================================
+Document ID     : MK-002
+Version         : 1.0
+Last Updated    : 2023-10-01
+Classification  : Mission Engineering Reference
+================================================================================
+
+SECTION 1 — THERMAL MANAGEMENT LESSONS
+================================================================================
+
+LESSON TH-001: Early Thermal Intervention
+------------------------------------------
+Finding: In all AETHER-1 thermal events, temperatures that were allowed to
+rise beyond 65°C required significantly longer recovery times (avg 2.5 hours)
+compared to events caught at 55°C (avg 45 minutes).
+Principle: Intervene at WARNING — do not wait for CRITICAL.
+Application: Any thermal parameter crossing WARNING threshold should trigger
+immediate load reduction, not just increased monitoring.
+
+LESSON TH-002: Attitude-Thermal Correlation
+---------------------------------------------
+Finding: 78% of AETHER-1 battery temperature anomalies had attitude deviation
+as a contributing or primary factor.
+Principle: Thermal anomaly investigation must always include attitude check.
+Application: When battery temperature exceeds 50°C, immediately assess
+spacecraft attitude and solar exposure angle.
+
+LESSON TH-003: CPU Thermal Throttling Impact
+----------------------------------------------
+Finding: CPU thermal throttling begins at 65°C and reduces clock speed
+by up to 60% at 75°C. This directly impacts all time-critical processes
+including attitude control loops.
+Principle: CPU temperature is not isolated — it cascades to control systems.
+Application: CPU temperature above 62°C should suspend all non-safety tasks
+regardless of whether attitude deviation has been observed yet.
+
+SECTION 2 — COMMUNICATION SYSTEM LESSONS
+================================================================================
+
+LESSON COM-001: Attitude is the Leading Communication Indicator
+----------------------------------------------------------------
+Finding: In every AETHER-1 communication degradation event, attitude
+deviation was detectable before signal degradation began.
+Principle: Monitor attitude stability as a predictive indicator for
+communication health, not just as an independent parameter.
+Application: Attitude deviation >±2.0 degrees should trigger communication
+system health check immediately.
+
+LESSON COM-002: Early Frequency Switching
+-------------------------------------------
+Finding: Teams that waited for complete signal loss before switching to
+X-band backup experienced average 47-minute blackouts. Teams that switched
+at -85dBm threshold experienced average 12-minute interruptions.
+Principle: Failover early — the cost of unnecessary switching is minimal
+compared to the cost of extended blackout.
+Application: Establish automatic frequency switching at -85dBm. Do not
+wait for complete loss.
+
+LESSON COM-003: Blackout Duration Predictability
+--------------------------------------------------
+Finding: AETHER-1 blackout duration correlates with the degree of attitude
+deviation at time of loss. Deviation of ±3-4 degrees: 30-60 min recovery.
+Deviation >±4 degrees: >60 min recovery.
+Principle: Attitude stability at time of signal loss predicts recovery time.
+Application: Use attitude deviation data to set realistic recovery time
+expectations and resource allocation for ground team response.
+
+SECTION 3 — POWER SYSTEM LESSONS
+================================================================================
+
+LESSON PWR-001: Lagging vs Leading Indicators
+-----------------------------------------------
+Finding: Battery charge level is a lagging power health indicator. By the
+time battery charge begins declining noticeably, the power deficit has
+already been accumulating for hours.
+Principle: Solar panel output trend is the leading power health indicator.
+Application: Monitor 30-minute rolling average of solar panel output.
+Declining trend below 200W requires immediate investigation regardless
+of current battery charge level.
+
+LESSON PWR-002: Load Shedding Timing
+--------------------------------------
+Finding: Power load shedding implemented when battery charge was above 70%
+was highly effective (recovery rate: 94%). Load shedding at <50% charge
+had lower effectiveness (recovery rate: 71%) due to compounding factors.
+Principle: Implement load shedding early, before battery depletion begins.
+Application: Trigger power load shedding at solar output WARNING threshold,
+not at battery charge WARNING threshold.
+
+LESSON PWR-003: Micrometeorite Impact Detection
+-------------------------------------------------
+Finding: Solar panel micrometeorite impacts do not cause sudden drops.
+They cause gradual multi-day output decline. Single-point threshold
+monitoring misses this entirely.
+Principle: Panel health requires trend monitoring, not just threshold alerting.
+Application: Implement 7-day rolling baseline comparison for solar output.
+Alert on >5% decline from 7-day average.
+
+SECTION 4 — PROPULSION SYSTEM LESSONS
+================================================================================
+
+LESSON PROP-001: Pressure Decline Rate Diagnosis
+--------------------------------------------------
+Finding: Gradual pressure decline (<15 kPa/hour) = supply restriction issue.
+Rapid pressure drop (>30 kPa/hour) = valve or structural issue.
+These have completely different response procedures.
+Principle: Rate of change is diagnostic information, not just the value itself.
+Application: Always calculate and log pressure decline rate alongside
+absolute pressure value.
+
+LESSON PROP-002: Filter Maintenance Compliance
+------------------------------------------------
+Finding: All filter occlusion events on AETHER-1 occurred when maintenance
+interval exceeded 45 days. Zero occlusion events within 45-day interval.
+Principle: Preventive maintenance compliance has perfect track record.
+Application: Automated maintenance schedule reminders must be treated
+as operational requirements, not suggestions.
+
+SECTION 5 — ATTITUDE CONTROL LESSONS
+================================================================================
+
+LESSON ATT-001: Reaction Wheel Momentum Management
+----------------------------------------------------
+Finding: Reaction wheel saturation events are preventable with daily
+desaturation. All saturation events on AETHER-1 occurred when automated
+desaturation was interrupted by competing scheduled tasks.
+Principle: Attitude control maintenance (desaturation) must have highest
+task priority — never be deferred by other scheduled operations.
+Application: Reaction wheel desaturation cannot be pre-empted by any
+scheduled task. Implement as protected priority process.
+
+LESSON ATT-002: Compound Attitude Events
+------------------------------------------
+Finding: Attitude deviation that simultaneously affects both communication
+and thermal systems is significantly harder to recover from than isolated
+attitude events. Average recovery time: 3.2 hours vs 45 minutes.
+Principle: Multi-system impact from attitude deviation is a force multiplier
+for mission disruption.
+Application: Any attitude deviation must be assessed for secondary system
+impacts within 5 minutes of detection.
+
+SECTION 6 — MONITORING AND ALERTING LESSONS
+================================================================================
+
+LESSON MON-001: Correlated Parameter Monitoring Value
+-------------------------------------------------------
+Finding: In post-incident analysis, 82% of AETHER-1 CRITICAL events showed
+early warning signals in correlated parameters 15-45 minutes before the
+primary parameter reached CRITICAL threshold.
+Principle: Correlated parameter monitoring provides earlier warning than
+single-parameter threshold alerting.
+Application: Every alert should automatically check and report status of
+all correlated parameters (defined in OPS-MANUAL-001 Section 2.2).
+
+LESSON MON-002: Trend Alerting vs Threshold Alerting
+------------------------------------------------------
+Finding: Threshold-only alerting missed gradual degradation events in
+4 out of 5 cases reviewed. Trend-based alerting would have provided
+15-60 minute earlier warning in each case.
+Principle: Threshold alerting catches acute events. Trend alerting catches
+chronic degradation. Both are needed.
+Application: Implement both absolute threshold alerts AND rate-of-change
+alerts for all monitored parameters.
+
+LESSON MON-003: Alert Fatigue Prevention
+------------------------------------------
+Finding: During Mission Days 100-120, excessive low-severity alerts led
+to reduced team responsiveness. Two WARNING events were acknowledged
+late as a result.
+Principle: Alert quality matters more than alert quantity.
+Application: INFO alerts should be logged but not actively notified.
+WARNING alerts trigger team notification. CRITICAL alerts trigger
+immediate response protocol. Avoid alerting on transient single readings.
+
+================================================================================
+END OF ENGINEERING LESSONS LEARNED COMPENDIUM MK-002
+================================================================================

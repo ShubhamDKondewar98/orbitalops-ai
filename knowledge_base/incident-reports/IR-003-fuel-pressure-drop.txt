@@ -1,0 +1,96 @@
+================================================================================
+AETHER-1 MISSION — INCIDENT REPORT
+================================================================================
+Report ID       : IR-003
+Date            : 2023-05-19
+Mission Day     : 113
+Severity        : WARNING
+System Affected : Propulsion
+Reported By     : Flight Operations Team
+Status          : RESOLVED
+================================================================================
+
+INCIDENT SUMMARY
+----------------
+AETHER-1 propulsion system reported a gradual decline in fuel pressure over
+a 3-hour monitoring window on Mission Day 113. Pressure dropped below the
+WARNING threshold but did not reach CRITICAL levels. Root cause was identified
+as a partially occluded fuel line filter. System was successfully restored
+through a fuel line purge procedure.
+
+TELEMETRY AT TIME OF INCIDENT
+------------------------------
+Parameter               | Nominal Range     | Observed Value    | Status
+------------------------|-------------------|-------------------|--------
+Fuel Pressure           | 220 kPa – 280 kPa | 187 kPa           | WARNING
+Battery Temperature     | 10°C – 45°C       | 31°C              | NORMAL
+Solar Panel Output      | 180W – 220W       | 201W              | NORMAL
+Signal Strength         | -90dBm – -60dBm   | -68dBm            | NORMAL
+Velocity                | 7.6 km/s – 7.8km/s| 7.71 km/s         | NORMAL
+Thruster Status         | Standby           | Standby           | NORMAL
+
+TIMELINE OF EVENTS
+------------------
+T+00:00 — Fuel pressure first noted at 231 kPa (lower end of nominal)
+T+01:00 — Fuel pressure dropped to 214 kPa (continued declining trend)
+T+02:00 — Fuel pressure reached 198 kPa — WARNING threshold crossed
+T+02:05 — Automated WARNING alert generated and sent to flight team
+T+02:30 — Flight team confirmed declining trend — investigation initiated
+T+03:00 — Fuel pressure reached 187 kPa — stabilized temporarily
+T+03:30 — Ground team executed fuel line purge procedure (Procedure FP-003)
+T+04:00 — Fuel pressure began recovering — 201 kPa observed
+T+04:45 — Fuel pressure returned to nominal range — 238 kPa
+T+05:00 — System monitoring continued at elevated frequency for 24 hours
+
+ROOT CAUSE ANALYSIS
+--------------------
+Primary Cause:
+  Partial occlusion of the primary fuel line filter caused by micro-debris
+  accumulation. The filter restriction reduced fuel flow rate, causing
+  downstream pressure to drop gradually over several hours.
+
+Contributing Factors:
+  1. Filter maintenance purge cycle was last executed on Mission Day 60,
+     exceeding the recommended 45-day interval.
+  2. Micro-debris accumulation rate was higher than baseline predictions
+     due to propellant quality variance noted during pre-launch fueling.
+  3. Gradual pressure decline pattern made early detection difficult
+     without trend analysis monitoring.
+
+ACTIONS TAKEN
+-------------
+1. Executed fuel line purge procedure FP-003 to clear filter occlusion.
+2. Increased fuel pressure monitoring frequency to 30-second intervals.
+3. Logged filter maintenance overdue status — updated maintenance schedule.
+4. Conducted full propulsion system health check post-recovery.
+
+RESOLUTION
+----------
+Fuel pressure restored to nominal range within 1 hour of purge procedure.
+No thruster performance degradation detected.
+Propulsion system returned to full operational status.
+
+LESSONS LEARNED
+---------------
+1. Filter maintenance purge cycles must not exceed 45-day intervals —
+   automated maintenance scheduling alert added to mission calendar.
+2. Gradual declining trends require trend-based alerting, not just
+   threshold-based alerting — monitoring logic updated.
+3. Propellant quality variance should trigger more frequent filter
+   inspection schedules for future missions.
+
+RECOMMENDATIONS FOR FUTURE MISSIONS
+-------------------------------------
+1. Implement trend-based anomaly detection for slowly declining parameters.
+2. Add automated filter purge reminder at 40-day intervals.
+3. Conduct propellant quality analysis before finalizing maintenance schedules.
+4. Add fuel pressure rate-of-change monitoring alongside absolute thresholds.
+
+RELATED INCIDENTS
+-----------------
+IR-008 — Thruster performance degradation during orbital adjustment (Day 91)
+IR-011 — Fuel pressure spike during emergency deorbit simulation (Day 101)
+
+================================================================================
+END OF REPORT IR-003
+================================================================================

@@ -1,0 +1,100 @@
+================================================================================
+AETHER-1 MISSION — INCIDENT REPORT
+================================================================================
+Report ID       : IR-004
+Date            : 2023-06-08
+Mission Day     : 133
+Severity        : WARNING
+System Affected : Power Generation
+Reported By     : Power Systems Team
+Status          : MONITORING
+================================================================================
+
+INCIDENT SUMMARY
+----------------
+AETHER-1 solar panel output showed a gradual degradation trend over Mission
+Days 120-133, declining from a baseline of 210W to 162W — a 23% reduction.
+Investigation identified partial shadowing due to micrometeorite impact debris
+on Panel Array B, combined with normal solar cell degradation accelerated by
+cumulative radiation exposure.
+
+TELEMETRY AT TIME OF INCIDENT
+------------------------------
+Parameter               | Nominal Range     | Observed Value    | Status
+------------------------|-------------------|-------------------|--------
+Solar Panel Output      | 180W – 220W       | 162W              | WARNING
+Battery Charge Level    | 60% – 95%         | 67%               | WARNING
+Battery Temperature     | 10°C – 45°C       | 29°C              | NORMAL
+Onboard CPU Temperature | 20°C – 60°C       | 34°C              | NORMAL
+Signal Strength         | -90dBm – -60dBm   | -71dBm            | NORMAL
+Altitude                | 520km – 540km     | 534km             | NORMAL
+
+TIMELINE OF EVENTS
+------------------
+Mission Day 120 — Solar panel output first noted below 200W baseline
+Mission Day 125 — Output declined to 188W — within nominal but trending down
+Mission Day 128 — Output reached 179W — approaching WARNING threshold
+Mission Day 130 — WARNING threshold (180W) crossed — alert generated
+Mission Day 133 — Output measured at 162W during peak solar exposure window
+T+00:00 — Power Systems Team initiated full panel diagnostic
+T+02:00 — Panel Array B identified as primary degraded array (output: 41W vs nominal 105W)
+T+04:00 — Micrometeorite impact debris confirmed via onboard imaging sensor
+T+06:00 — Power load shedding plan implemented — non-critical systems reduced
+T+24:00 — Spacecraft attitude adjusted to optimize Panel Array A solar exposure
+
+ROOT CAUSE ANALYSIS
+--------------------
+Primary Cause:
+  Micrometeorite impact on Panel Array B created surface debris and minor
+  structural damage to approximately 18% of Array B photovoltaic cells.
+  Debris shadowing reduced effective light capture area significantly.
+
+Contributing Factors:
+  1. Cumulative radiation exposure over 133 mission days caused baseline
+     solar cell efficiency degradation of approximately 4-6% beyond
+     pre-launch projections.
+  2. Current mission orbital altitude (534km) passes through elevated
+     micrometeorite flux region identified in post-launch orbital analysis.
+  3. Battery charge level declining in parallel indicated the power deficit
+     was not being compensated by battery reserves alone.
+
+ACTIONS TAKEN
+-------------
+1. Implemented power load shedding — reduced non-critical system consumption by 28W.
+2. Adjusted spacecraft attitude by 7 degrees to maximize Panel Array A exposure.
+3. Reduced battery deep discharge cycles to protect remaining battery health.
+4. Scheduled orbital altitude adjustment to exit elevated flux region.
+5. Updated power budget model with new degraded baseline values.
+
+RESOLUTION
+----------
+Status: MONITORING — full resolution pending orbital altitude adjustment.
+Interim measures have stabilized power budget within acceptable margins.
+Panel Array B permanent repair not possible via remote operation.
+Mission continues with adjusted power budget and load management plan.
+
+LESSONS LEARNED
+---------------
+1. Solar panel output trend monitoring over 7-day windows should be
+   standard — single-point threshold alerts missed gradual degradation.
+2. Orbital altitude selection must weight micrometeorite flux data more
+   heavily in pre-mission planning phases.
+3. Battery charge level and solar output should be monitored as correlated
+   pair — combined decline is a stronger signal than either alone.
+
+RECOMMENDATIONS FOR FUTURE MISSIONS
+-------------------------------------
+1. Implement 7-day rolling average trend alerts for solar panel output.
+2. Add micrometeorite flux risk zones to orbital planning constraints.
+3. Design panel arrays with debris-resistant surface coatings.
+4. Implement correlated parameter monitoring for power system health.
+5. Maintain 15% power budget margin for degradation contingency.
+
+RELATED INCIDENTS
+-----------------
+IR-001 — Battery temperature anomaly from thermal imbalance (Mission Day 47)
+IR-006 — Battery charge depletion during extended eclipse period (Mission Day 82)
+
+================================================================================
+END OF REPORT IR-004
+================================================================================

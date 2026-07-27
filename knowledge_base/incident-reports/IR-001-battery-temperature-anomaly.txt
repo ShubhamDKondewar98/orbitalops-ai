@@ -1,0 +1,97 @@
+================================================================================
+AETHER-1 MISSION — INCIDENT REPORT
+================================================================================
+Report ID       : IR-001
+Date            : 2023-03-14
+Mission Day     : 47
+Severity        : CRITICAL
+System Affected : Power / Thermal Management
+Reported By     : Flight Operations Team
+Status          : RESOLVED
+================================================================================
+
+INCIDENT SUMMARY
+----------------
+On Mission Day 47, AETHER-1 onboard telemetry reported a rapid increase in
+battery temperature exceeding the nominal operating threshold. The anomaly
+triggered automated safe mode entry and required immediate ground intervention.
+
+TELEMETRY AT TIME OF INCIDENT
+------------------------------
+Parameter               | Nominal Range     | Observed Value    | Status
+------------------------|-------------------|-------------------|--------
+Battery Temperature     | 10°C – 45°C       | 82°C              | CRITICAL
+Battery Charge Level    | 60% – 95%         | 91%               | NORMAL
+Solar Panel Output      | 180W – 220W       | 214W              | NORMAL
+Onboard CPU Temperature | 20°C – 60°C       | 58°C              | WARNING
+Signal Strength         | -90dBm – -60dBm   | -72dBm            | NORMAL
+Altitude                | 520km – 540km     | 531km             | NORMAL
+
+TIMELINE OF EVENTS
+------------------
+T+00:00 — Battery temperature first exceeded 55°C threshold (WARNING triggered)
+T+00:08 — Temperature continued rising, reached 70°C
+T+00:14 — CRITICAL threshold (75°C) breached, automated alert generated
+T+00:17 — Flight Operations Team notified via automated alert system
+T+00:22 — Ground team initiated thermal load reduction procedure
+T+00:31 — Non-essential onboard systems powered down
+T+00:45 — Battery temperature stabilized at 79°C
+T+01:10 — Temperature began declining following load reduction
+T+02:30 — Temperature returned to nominal range (43°C)
+T+03:00 — Normal operations resumed
+
+ROOT CAUSE ANALYSIS
+--------------------
+Primary Cause:
+  Thermal regulation instability caused by prolonged direct solar exposure
+  during an unplanned orbital orientation shift. The spacecraft attitude
+  control system failed to execute a scheduled rotation maneuver, leaving
+  solar-facing battery panels exposed for an extended duration.
+
+Contributing Factors:
+  1. Attitude Stability deviation of 4.2 degrees from nominal caused incorrect
+     solar angle alignment.
+  2. Thermal Management subsystem did not trigger cooling cycle due to a
+     software flag conflict with safe mode logic.
+  3. High CPU temperature (58°C) indicated elevated onboard processing load
+     which contributed to internal heat generation.
+
+ACTIONS TAKEN
+-------------
+1. Reduced non-essential power load by 35% to lower thermal output.
+2. Manually triggered attitude correction maneuver from ground control.
+3. Overrode safe mode flag to allow thermal management cooling cycle.
+4. Increased battery temperature monitoring frequency from 60s to 10s intervals.
+5. Initiated full thermal subsystem diagnostic post-recovery.
+
+RESOLUTION
+----------
+Battery temperature normalized within 2.5 hours of initial detection.
+No permanent damage to battery cells detected.
+Attitude correction maneuver successfully executed.
+Thermal management system restored to automatic operation.
+
+LESSONS LEARNED
+---------------
+1. Attitude stability deviations greater than 2 degrees should trigger
+   immediate thermal risk assessment — threshold updated in monitoring system.
+2. Safe mode flag logic must not suppress thermal management cooling cycles
+   under any condition — software patch deployed (Patch ID: SW-047-THERMAL).
+3. Ground team response time can be reduced by pre-defining thermal emergency
+   runbooks accessible directly from mission control dashboard.
+
+RECOMMENDATIONS FOR FUTURE MISSIONS
+-------------------------------------
+1. Implement redundant thermal sensors on battery panels.
+2. Add automated attitude-thermal correlation check in onboard flight software.
+3. Set battery temperature WARNING threshold to 50°C (reduced from 55°C).
+4. Conduct quarterly thermal stress simulation tests.
+
+RELATED INCIDENTS
+-----------------
+IR-007 — CPU Temperature spike during communication blackout (Mission Day 89)
+IR-012 — Solar panel output drop during attitude instability (Mission Day 103)
+
+================================================================================
+END OF REPORT IR-001
+================================================================================

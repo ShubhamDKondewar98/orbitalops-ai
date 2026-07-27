@@ -1,0 +1,215 @@
+================================================================================
+AETHER-1 MISSION — HISTORICAL PATTERNS AND ENGINEERING KNOWLEDGE BASE
+================================================================================
+Document ID     : MK-001
+Version         : 1.3
+Last Updated    : 2023-09-15
+Classification  : Mission Engineering Reference
+================================================================================
+
+SECTION 1 — KNOWN FAILURE PATTERNS
+================================================================================
+
+1.1 THERMAL CASCADE PATTERN
+-----------------------------
+Description:
+  A thermal cascade occurs when battery temperature elevation triggers a
+  chain reaction affecting multiple spacecraft systems. AETHER-1 has
+  experienced 3 confirmed thermal cascade events.
+
+Pattern Signature:
+  Battery Temperature rising > 55°C
+  → Solar Panel Output elevated or Attitude deviation present
+  → CPU Temperature beginning to rise (delayed 8-15 minutes)
+  → Signal Strength degrading if attitude affected
+
+Historical Occurrences:
+  Mission Day 47  — IR-001 (CRITICAL — full cascade)
+  Mission Day 89  — IR-007 (WARNING — partial cascade, contained early)
+  Mission Day 156 — IR-005 (WARNING — CPU/attitude cascade, no thermal component)
+
+Early Warning Indicators:
+  - Battery temperature rising >2°C per 10-minute window
+  - Concurrent attitude deviation beyond ±1.5 degrees
+  - Solar panel output above 210W during expected nominal period
+
+Recommended Response:
+  On detection of thermal cascade signature — immediately execute:
+  1. Power load reduction
+  2. Attitude assessment and correction
+  3. CPU load reduction
+  Do not wait for CRITICAL threshold. Early intervention contains cascade.
+
+--------------------------------------------------------------------------------
+
+1.2 COMMUNICATION DEGRADATION PATTERN
+----------------------------------------
+Description:
+  Signal degradation events on AETHER-1 follow a predictable multi-stage
+  pattern. Recognizing early stages allows intervention before complete loss.
+
+Pattern Signature:
+  Stage 1 — Signal strength declining trend over 10-minute window
+  Stage 2 — Data transmission rate dropping below 80 kbps
+  Stage 3 — Signal strength crossing -85 dBm
+  Stage 4 — Complete signal loss
+
+Historical Occurrences:
+  Mission Day 66  — IR-002 (CRITICAL — complete blackout 47 minutes)
+  Mission Day 95  — IR-009 (WARNING — partial degradation, solar storm related)
+  Mission Day 141 — Minor degradation event, resolved via attitude adjustment
+
+Key Finding:
+  In 100% of AETHER-1 communication anomalies, attitude stability deviation
+  was either a primary cause or contributing factor. Monitoring attitude
+  stability is the best leading indicator for communication health.
+
+Recommended Response:
+  At Stage 2 — immediately check attitude stability and execute correction.
+  At Stage 3 — switch to X-band backup without waiting for complete loss.
+  Early frequency switching reduced average recovery time by 67% in testing.
+
+--------------------------------------------------------------------------------
+
+1.3 POWER BUDGET STRESS PATTERN
+----------------------------------
+Description:
+  Power budget stress occurs when the combination of reduced solar generation
+  and elevated system consumption creates an unsustainable power deficit.
+
+Pattern Signature:
+  Solar Panel Output declining (below 190W)
+  + Battery Charge Level declining simultaneously
+  + High CPU utilization or elevated temperatures
+
+Historical Occurrences:
+  Mission Day 82  — IR-006 (extended eclipse — battery depletion to 38%)
+  Mission Day 133 — IR-004 (panel degradation — 13-day gradual decline)
+
+Key Finding:
+  Battery charge level alone is a lagging indicator. Solar panel output
+  trend is the leading indicator. When output drops below 195W and shows
+  a declining trend, power budget stress intervention should begin
+  immediately — before battery charge level begins to decline.
+
+Recommended Response:
+  1. Implement power load shedding at first declining trend detection
+  2. Adjust attitude for maximum solar exposure
+  3. Defer non-essential high-power operations
+
+--------------------------------------------------------------------------------
+
+1.4 PROPULSION SYSTEM DEGRADATION PATTERN
+-------------------------------------------
+Description:
+  Fuel pressure anomalies on AETHER-1 have consistently followed a slow
+  degradation curve rather than sudden drops, indicating filter or line issues
+  rather than catastrophic leaks.
+
+Pattern Signature:
+  Fuel pressure declining at rate of 5-15 kPa per hour
+  No corresponding velocity change in short term
+  No thruster activation logged
+
+Historical Occurrences:
+  Mission Day 113 — IR-003 (filter occlusion — gradual 3-hour decline)
+  Mission Day 91  — IR-008 (thruster performance degradation — separate pattern)
+
+Key Finding:
+  Gradual pressure decline without velocity impact indicates a supply-side
+  restriction (filter/line). Sudden pressure drop with velocity anomaly
+  indicates thruster or valve issue. These require different responses.
+
+Recommended Response for Gradual Decline:
+  Execute fuel line purge procedure FP-003 as first intervention.
+  Success rate: 87% based on mission history.
+
+SECTION 2 — SYSTEM INTERDEPENDENCY MAP
+================================================================================
+
+The following interdependencies have been validated through AETHER-1 mission
+experience. These are not theoretical — each has been observed in-mission.
+
+  CPU Temperature → Attitude Stability
+    High CPU load causes thermal throttling which delays attitude control
+    loop execution, directly degrading stability. (Confirmed: IR-005)
+
+  Attitude Stability → Signal Strength
+    Attitude deviation misaligns directional antenna, causing signal loss.
+    Deviation of ±3.5 degrees typically causes signal loss within 8 minutes.
+    (Confirmed: IR-002)
+
+  Solar Panel Output → Battery Temperature
+    Excessive solar exposure elevates both panel output and battery temperature
+    simultaneously. High output (>215W) during attitude deviation is a
+    thermal risk indicator. (Confirmed: IR-001)
+
+  Battery Charge Level → CPU Temperature
+    Low battery charge triggers power management mode which can cause
+    voltage irregularities and CPU thermal events. (Confirmed: IR-006)
+
+  Fuel Pressure → Velocity (delayed)
+    Sustained fuel pressure below 200 kPa for >6 hours begins to impact
+    thruster availability, which can cause gradual velocity drift.
+    Impact is delayed 4-8 hours after pressure anomaly. (Confirmed: IR-003)
+
+SECTION 3 — MISSION OPERATIONS BEST PRACTICES
+================================================================================
+
+3.1 ANOMALY INVESTIGATION FRAMEWORK
+--------------------------------------
+When an anomaly is detected, AETHER-1 operations follow this investigation order:
+
+  Step 1 — Identify the primary anomalous parameter
+  Step 2 — Check correlated parameters (Section 2.2 of OPS-MANUAL-001)
+  Step 3 — Review trend data for the preceding 30-60 minutes
+  Step 4 — Check recent maneuver history and scheduled task log
+  Step 5 — Compare against historical pattern signatures (Section 1 above)
+  Step 6 — Classify as known pattern or novel anomaly
+  Step 7 — Apply standard response procedure or escalate for novel anomaly
+
+3.2 SHIFT HANDOVER REQUIREMENTS
+----------------------------------
+Every shift handover must include:
+  - Summary of all active WARNING and CRITICAL alerts
+  - Current trend status for all monitored parameters
+  - Scheduled maneuvers and tasks in next 8 hours
+  - Any parameters approaching threshold (within 15% of WARNING level)
+  - Open action items from previous shift
+
+3.3 DOCUMENTATION REQUIREMENTS
+---------------------------------
+For every CRITICAL event:
+  - Incident report must be filed within 24 hours
+  - Root cause analysis must be completed within 72 hours
+  - Lessons learned must be added to this knowledge base within 7 days
+
+For every WARNING event:
+  - Event log entry required within 4 hours
+  - Trend monitoring report within 24 hours
+
+SECTION 4 — ANOMALY CLASSIFICATION GUIDE
+================================================================================
+
+Use this guide to determine initial severity classification:
+
+CRITICAL (Immediate Action Required):
+  - Any parameter exceeding CRITICAL threshold (see Section 1, OPS-MANUAL-001)
+  - Complete communication loss
+  - Two or more WARNING parameters active simultaneously
+  - Any parameter in uncontrolled deteriorating trend toward CRITICAL
+
+WARNING (Prompt Investigation Required):
+  - Any parameter in WARNING range
+  - Any parameter showing consistent declining trend toward WARNING
+  - Correlated parameter pair showing simultaneous early deviation
+  - Maintenance schedule overdue by >10 days for critical procedures
+
+INFO (Monitor and Log):
+  - Parameter approaching WARNING threshold (within 10%)
+  - Single isolated reading outside nominal but not in WARNING range
+  - Scheduled maintenance reminder
+
+================================================================================
+END OF MISSION KNOWLEDGE BASE DOCUMENT MK-001
+================================================================================

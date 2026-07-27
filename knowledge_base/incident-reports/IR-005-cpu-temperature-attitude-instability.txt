@@ -1,0 +1,105 @@
+================================================================================
+AETHER-1 MISSION — INCIDENT REPORT
+================================================================================
+Report ID       : IR-005
+Date            : 2023-07-01
+Mission Day     : 156
+Severity        : WARNING
+System Affected : Onboard Computing / Attitude Control
+Reported By     : Systems Engineering Team
+Status          : RESOLVED
+================================================================================
+
+INCIDENT SUMMARY
+----------------
+AETHER-1 experienced simultaneous CPU temperature elevation and attitude
+stability degradation on Mission Day 156 during execution of a scheduled
+orbital imaging task. The high computational load from image processing
+software caused CPU thermal throttling, which delayed attitude control
+loop execution and resulted in compounding stability deviation.
+
+TELEMETRY AT TIME OF INCIDENT
+------------------------------
+Parameter               | Nominal Range     | Observed Value    | Status
+------------------------|-------------------|-------------------|--------
+Onboard CPU Temperature | 20°C – 60°C       | 71°C              | CRITICAL
+Attitude Stability      | ±1.0 degrees      | ±4.1 degrees      | CRITICAL
+Battery Temperature     | 10°C – 45°C       | 38°C              | NORMAL
+Signal Strength         | -90dBm – -60dBm   | -69dBm            | NORMAL
+Solar Panel Output      | 180W – 220W       | 193W              | NORMAL
+Data Transmission Rate  | 50kbps – 200kbps  | 31 kbps           | WARNING
+
+TIMELINE OF EVENTS
+------------------
+T+00:00 — Scheduled orbital imaging task initiated (high resolution mode)
+T+00:15 — CPU utilization reached 94% — temperature began rising
+T+00:28 — CPU temperature crossed WARNING threshold (60°C) — reached 63°C
+T+00:35 — Thermal throttling engaged — CPU clock reduced by 40%
+T+00:38 — Attitude control loop execution delayed due to CPU throttling
+T+00:42 — Attitude stability deviation reached ±2.3 degrees
+T+00:50 — CPU temperature peaked at 71°C — CRITICAL alert generated
+T+00:52 — Attitude stability degraded to ±4.1 degrees — CRITICAL alert generated
+T+00:55 — Ground team commanded imaging task suspension
+T+01:05 — CPU utilization dropped to 34% — temperature began declining
+T+01:20 — Attitude correction maneuver executed successfully
+T+01:45 — Both parameters returned to nominal range
+
+ROOT CAUSE ANALYSIS
+--------------------
+Primary Cause:
+  High-resolution imaging processing software consumed excessive CPU
+  resources, triggering thermal throttling. Throttling reduced attitude
+  control loop execution frequency from 10Hz to 4Hz, insufficient for
+  maintaining stability during orbital maneuver phase.
+
+Contributing Factors:
+  1. Imaging task was scheduled concurrently with an orbital correction
+     window — high computational load coincided with period requiring
+     maximum attitude control authority.
+  2. CPU thermal management did not prioritize attitude control processes
+     over imaging processes in task scheduling.
+  3. Data transmission rate degradation (31kbps) indicated communication
+     system was also impacted by CPU resource contention.
+
+ACTIONS TAKEN
+-------------
+1. Suspended imaging task immediately upon CRITICAL CPU temperature alert.
+2. Reduced CPU load by terminating non-essential background processes.
+3. Executed attitude correction maneuver after CPU temperature stabilized.
+4. Updated task scheduling rules — imaging tasks prohibited during orbital
+   correction windows (Procedure Update: OPS-156-SCHED).
+5. Implemented CPU process priority rules — attitude control guaranteed
+   minimum 30% CPU allocation at all times.
+
+RESOLUTION
+----------
+CPU temperature returned to nominal within 40 minutes of imaging suspension.
+Attitude stability restored to ±0.5 degrees nominal.
+Imaging task rescheduled to non-maneuver orbital window successfully.
+No data loss or mission objective impact confirmed.
+
+LESSONS LEARNED
+---------------
+1. CPU temperature and attitude stability must be monitored as correlated
+   parameters — CPU thermal throttling directly impacts control systems.
+2. High-computation tasks must never be scheduled during maneuver windows —
+   task scheduler updated with conflict detection logic.
+3. Process priority architecture must guarantee attitude control system
+   resources regardless of other task demands.
+
+RECOMMENDATIONS FOR FUTURE MISSIONS
+-------------------------------------
+1. Implement real-time CPU resource reservation for safety-critical processes.
+2. Add task conflict detection to mission planning scheduler.
+3. Monitor data transmission rate as proxy indicator of CPU health.
+4. Define maximum CPU utilization threshold of 75% during maneuver phases.
+5. Conduct thermal stress testing of high-load scenarios pre-launch.
+
+RELATED INCIDENTS
+-----------------
+IR-001 — Battery temperature anomaly with CPU temperature correlation (Day 47)
+IR-002 — Signal loss event with attitude instability as contributing factor (Day 66)
+
+================================================================================
+END OF REPORT IR-005
+================================================================================

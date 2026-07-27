@@ -1,0 +1,101 @@
+================================================================================
+AETHER-1 MISSION — INCIDENT REPORT
+================================================================================
+Report ID       : IR-002
+Date            : 2023-04-02
+Mission Day     : 66
+Severity        : CRITICAL
+System Affected : Communications
+Reported By     : Ground Station Operations
+Status          : RESOLVED
+================================================================================
+
+INCIDENT SUMMARY
+----------------
+AETHER-1 experienced a complete communication blackout lasting 47 minutes on
+Mission Day 66. All telemetry and command uplink was lost. The spacecraft
+autonomously entered safe mode and executed onboard contingency protocols.
+Ground team re-established contact after antenna realignment and frequency
+switching procedures.
+
+TELEMETRY AT TIME OF INCIDENT
+------------------------------
+Parameter               | Nominal Range       | Last Known Value  | Status
+------------------------|---------------------|-------------------|--------
+Signal Strength         | -90dBm – -60dBm     | -112dBm           | CRITICAL
+Data Transmission Rate  | 50kbps – 200kbps    | 0 kbps            | CRITICAL
+Battery Charge Level    | 60% – 95%           | 74%               | NORMAL
+Solar Panel Output      | 180W – 220W         | 197W              | NORMAL
+Altitude                | 520km – 540km       | 528km             | NORMAL
+Attitude Stability      | ±1.0 degrees        | ±3.8 degrees      | WARNING
+
+TIMELINE OF EVENTS
+------------------
+T+00:00 — Signal strength dropped below -90dBm WARNING threshold
+T+00:03 — Data transmission rate degraded to 12 kbps
+T+00:07 — Complete signal loss. All telemetry feeds interrupted.
+T+00:10 — Ground station triggered automated antenna sweep protocol
+T+00:15 — AETHER-1 autonomously entered communication contingency safe mode
+T+00:22 — Ground team switched to backup frequency band (S-band to X-band)
+T+00:35 — Partial signal detected at -98dBm on X-band
+T+00:47 — Full signal restored. Telemetry resumed.
+T+01:00 — AETHER-1 safe mode exited. Normal operations restored.
+T+02:00 — Full diagnostic completed. No data loss confirmed.
+
+ROOT CAUSE ANALYSIS
+--------------------
+Primary Cause:
+  Attitude stability deviation of 3.8 degrees caused the spacecraft's
+  directional antenna to misalign with ground station pointing angle.
+  The misalignment exceeded the antenna's beamwidth tolerance, resulting
+  in complete signal loss.
+
+Contributing Factors:
+  1. Attitude control system experienced a reaction wheel momentum
+     saturation event, temporarily reducing attitude correction authority.
+  2. Ground station did not immediately detect attitude deviation due to
+     a 6-minute telemetry polling delay.
+  3. Primary frequency band (S-band) had higher susceptibility to
+     misalignment losses compared to X-band backup.
+
+ACTIONS TAKEN
+-------------
+1. Executed antenna sweep protocol across all available frequency bands.
+2. Switched communication to X-band backup frequency.
+3. Sent attitude correction command upon signal restoration.
+4. Desaturated reaction wheels via magnetic torquer activation.
+5. Reduced telemetry polling interval from 6 minutes to 90 seconds.
+
+RESOLUTION
+----------
+Full communication restored after 47 minutes.
+Reaction wheel momentum successfully desaturated.
+Attitude stability returned to ±0.6 degrees nominal.
+No onboard data lost during blackout period.
+
+LESSONS LEARNED
+---------------
+1. Attitude stability deviation beyond ±2.0 degrees must immediately
+   trigger communication risk assessment — runbook updated.
+2. Telemetry polling interval of 6 minutes is insufficient for early
+   anomaly detection — reduced to 90 seconds operationally.
+3. Automatic frequency band switching should be triggered earlier —
+   at signal strength -85dBm rather than waiting for complete loss.
+4. Reaction wheel momentum saturation should generate its own alert
+   independent of attitude stability monitoring.
+
+RECOMMENDATIONS FOR FUTURE MISSIONS
+-------------------------------------
+1. Implement automatic antenna tracking with real-time attitude feed.
+2. Reduce S-band to X-band failover threshold to -85dBm.
+3. Add reaction wheel saturation as standalone monitored parameter.
+4. Schedule daily reaction wheel desaturation maneuvers proactively.
+
+RELATED INCIDENTS
+-----------------
+IR-005 — Attitude instability during orbital correction burn (Mission Day 78)
+IR-009 — Partial signal degradation during solar storm (Mission Day 95)
+
+================================================================================
+END OF REPORT IR-002
+================================================================================

@@ -1,0 +1,204 @@
+================================================================================
+AETHER-1 MISSION — SPACECRAFT OPERATIONAL PROCEDURES MANUAL
+================================================================================
+Document ID     : OPS-MANUAL-001
+Version         : 2.1
+Last Updated    : 2023-08-01
+Classification  : Flight Operations Reference
+================================================================================
+
+SECTION 1 — NORMAL OPERATING RANGES
+================================================================================
+
+The following table defines nominal, warning, and critical thresholds for all
+monitored AETHER-1 telemetry parameters. All flight operations decisions must
+reference these values as baseline.
+
+--------------------------------------------------------------------------------
+PARAMETER             | UNIT   | NOMINAL RANGE      | WARNING          | CRITICAL
+----------------------|--------|---------------------|------------------|----------
+Battery Temperature   | °C     | 10 – 45            | 45 – 60 / <5     | >60 / <0
+Battery Charge Level  | %      | 60 – 95            | 40 – 60 / >97    | <40 / >99
+Solar Panel Output    | W      | 180 – 220          | 150 – 180        | <150
+Fuel Pressure         | kPa    | 220 – 280          | 190 – 220        | <190
+Signal Strength       | dBm    | -90 – -60          | -100 – -90       | <-100
+Data Transmission Rate| kbps   | 50 – 200           | 20 – 50          | <20
+CPU Temperature       | °C     | 20 – 60            | 60 – 70          | >70
+Altitude              | km     | 520 – 540          | 510 – 520/>540   | <510/>550
+Velocity              | km/s   | 7.60 – 7.80        | 7.50–7.60/>7.80  | <7.50/>7.90
+Attitude Stability    | deg    | ±1.0               | ±1.0 – ±3.0      | >±3.0
+--------------------------------------------------------------------------------
+
+SECTION 2 — TELEMETRY MONITORING PROTOCOLS
+================================================================================
+
+2.1 CONTINUOUS MONITORING REQUIREMENTS
+---------------------------------------
+- All parameters must be sampled at minimum 60-second intervals during normal ops
+- During anomaly investigation: increase to 10-second intervals for affected systems
+- During maneuver phases: increase to 5-second intervals for attitude and propulsion
+- Correlated parameter pairs must be monitored together (see Section 2.2)
+
+2.2 CORRELATED PARAMETER MONITORING
+--------------------------------------
+The following parameter pairs are known to have operational dependencies.
+Anomaly in one should trigger increased monitoring of its correlated parameter:
+
+  Battery Temperature ←→ Solar Panel Output
+    (thermal anomalies often correlate with power generation issues)
+
+  CPU Temperature ←→ Attitude Stability
+    (CPU throttling directly impacts attitude control loop frequency)
+
+  Signal Strength ←→ Attitude Stability
+    (attitude deviation causes antenna misalignment and signal degradation)
+
+  Battery Charge Level ←→ Solar Panel Output
+    (declining output causes accelerated battery drain)
+
+  Fuel Pressure ←→ Velocity
+    (propulsion anomalies impact orbital velocity over time)
+
+2.3 ALERT ESCALATION PROTOCOL
+--------------------------------
+Level 1 — INFO    : Log event. No immediate action required. Monitor trend.
+Level 2 — WARNING : Notify flight operations team within 5 minutes.
+                    Increase monitoring frequency. Begin investigation.
+Level 3 — CRITICAL: Notify flight operations team IMMEDIATELY.
+                    Initiate emergency response procedure.
+                    Consider safe mode entry.
+
+SECTION 3 — STANDARD RESPONSE PROCEDURES
+================================================================================
+
+3.1 BATTERY TEMPERATURE ANOMALY RESPONSE
+------------------------------------------
+Trigger: Battery temperature > 60°C (WARNING) or > 75°C (CRITICAL)
+
+Immediate Actions:
+  Step 1 — Verify reading with secondary temperature sensor
+  Step 2 — Check solar panel output and attitude stability for correlation
+  Step 3 — Reduce non-essential power load by minimum 25%
+  Step 4 — If temperature continues rising — initiate thermal load reduction
+  Step 5 — If temperature exceeds 80°C — prepare for safe mode entry
+  Step 6 — Execute attitude correction to reduce solar exposure if applicable
+  Step 7 — Notify systems engineering team for thermal subsystem assessment
+
+Recovery Criteria:
+  Battery temperature must remain below 45°C for 30 consecutive minutes
+  before declaring nominal status restored.
+
+3.2 SIGNAL LOSS RESPONSE PROCEDURE
+-------------------------------------
+Trigger: Signal strength < -90dBm (WARNING) or complete loss (CRITICAL)
+
+Immediate Actions:
+  Step 1 — Execute automated antenna sweep across S-band frequencies
+  Step 2 — Check attitude stability telemetry (last known values)
+  Step 3 — If no recovery within 5 minutes — switch to X-band backup
+  Step 4 — Attempt uplink on all available frequency bands
+  Step 5 — If no contact within 15 minutes — spacecraft enters autonomous
+            contingency safe mode (pre-programmed onboard)
+  Step 6 — Continue contact attempts every 10 minutes for up to 4 hours
+  Step 7 — If contact not restored within 4 hours — escalate to mission director
+
+Recovery Criteria:
+  Signal strength must be sustained above -85dBm for 10 consecutive minutes
+  before resuming normal command uplink operations.
+
+3.3 FUEL PRESSURE ANOMALY RESPONSE
+-------------------------------------
+Trigger: Fuel pressure < 220 kPa (WARNING) or < 190 kPa (CRITICAL)
+
+Immediate Actions:
+  Step 1 — Monitor pressure trend over 15-minute window
+  Step 2 — If declining trend confirmed — suspend all thruster operations
+  Step 3 — Check last filter purge date — if >45 days, execute purge (FP-003)
+  Step 4 — Execute fuel line purge procedure FP-003
+  Step 5 — If pressure does not recover after purge — isolate fuel line segment
+  Step 6 — Notify propulsion systems engineer immediately for CRITICAL events
+
+Recovery Criteria:
+  Fuel pressure must return above 220 kPa and remain stable for 1 hour.
+
+3.4 SOLAR PANEL OUTPUT DEGRADATION RESPONSE
+----------------------------------------------
+Trigger: Solar panel output < 180W (WARNING) or < 150W (CRITICAL)
+
+Immediate Actions:
+  Step 1 — Check battery charge level for correlated decline
+  Step 2 — Adjust spacecraft attitude to optimize solar array angle
+  Step 3 — Run panel array diagnostic to identify degraded array
+  Step 4 — Implement power load shedding plan (reduce non-critical loads)
+  Step 5 — Assess whether output decline is trend-based or sudden
+  Step 6 — If sudden drop — check for attitude anomaly or shadow event
+  Step 7 — If gradual decline — initiate degradation investigation
+
+Recovery Criteria:
+  For sudden drops: output must recover above 180W within 2 hours.
+  For gradual degradation: mission continues with adjusted power budget.
+
+3.5 CPU TEMPERATURE ANOMALY RESPONSE
+---------------------------------------
+Trigger: CPU temperature > 60°C (WARNING) or > 70°C (CRITICAL)
+
+Immediate Actions:
+  Step 1 — Identify highest CPU utilization processes
+  Step 2 — Suspend non-essential high-computation tasks immediately
+  Step 3 — Check attitude stability for correlated degradation
+  Step 4 — Reduce scheduled task load — defer imaging and non-critical ops
+  Step 5 — If temperature exceeds 75°C — suspend all non-safety tasks
+  Step 6 — Ensure attitude control process has guaranteed CPU allocation
+
+Recovery Criteria:
+  CPU temperature must remain below 55°C for 20 consecutive minutes.
+
+3.6 ATTITUDE INSTABILITY RESPONSE
+------------------------------------
+Trigger: Attitude deviation > ±2.0 degrees (WARNING) or > ±3.0 degrees (CRITICAL)
+
+Immediate Actions:
+  Step 1 — Check reaction wheel status and momentum levels
+  Step 2 — Check signal strength for communication impact assessment
+  Step 3 — Check CPU temperature for control loop degradation
+  Step 4 — Execute attitude correction maneuver if reaction wheels nominal
+  Step 5 — If reaction wheels saturated — activate magnetic torquer desaturation
+  Step 6 — Suspend all maneuvers until attitude stabilized
+  Step 7 — If attitude uncontrollable — initiate safe mode entry
+
+Recovery Criteria:
+  Attitude stability must return to ±1.0 degrees and remain stable for
+  15 consecutive minutes before resuming normal operations.
+
+SECTION 4 — SAFE MODE ENTRY CRITERIA
+================================================================================
+
+AETHER-1 enters autonomous safe mode when ANY of the following occur:
+  - Complete communication loss > 7 minutes
+  - Battery charge level < 35%
+  - Battery temperature > 85°C
+  - CPU temperature > 80°C
+  - Attitude deviation > ±5.0 degrees uncontrolled
+
+In safe mode AETHER-1 will:
+  - Disable all non-essential systems
+  - Orient solar panels toward sun for maximum power generation
+  - Reduce CPU load to minimum essential processes only
+  - Broadcast beacon signal on all frequency bands every 60 seconds
+  - Await ground contact and recovery commands
+
+SECTION 5 — MAINTENANCE SCHEDULES
+================================================================================
+
+Procedure                          | Interval    | Last Completed
+-----------------------------------|-------------|----------------
+Fuel line filter purge (FP-003)    | 45 days     | Mission Day 113
+Reaction wheel desaturation        | Daily       | Automated
+Battery health diagnostic          | 30 days     | Mission Day 140
+Solar panel efficiency assessment  | 60 days     | Mission Day 120
+Communication system diagnostic    | 14 days     | Mission Day 148
+Thermal system verification        | 30 days     | Mission Day 135
+
+================================================================================
+END OF OPERATIONAL PROCEDURES MANUAL OPS-MANUAL-001
+================================================================================
