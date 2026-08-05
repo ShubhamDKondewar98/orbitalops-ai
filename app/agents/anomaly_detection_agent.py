@@ -1,7 +1,7 @@
 
-from app.core.constants import TELEMETRY_THRESHOLDS, CORRELATED_PARAMETERS
+from app.core.constants import TELEMETRY_THRESHOLDS, CORRELATED_PARAMETERS,TREND_WINDOW_SIZE, TREND_RATE_THRESHOLDS
 from app.agents.state import OrbitalOpsState, AnomalyInfo
-
+from collections import deque 
 
 def _is_in_any_range(value: float, ranges: list[tuple[float, float]]) -> bool:
     for range_min, range_max in ranges:
@@ -52,3 +52,42 @@ def anomaly_detection_node(state: OrbitalOpsState) -> OrbitalOpsState:
     )
 
     return state
+
+
+class TelemetryHistory:
+    def __init__(self):
+        self.history: dict[str,deque[float]] = {
+            param: deque(maxlen=TREND_WINDOW_SIZE)
+            for param in TELEMETRY_THRESHOLDS.keys()
+        }
+
+    def add_reading(self,telemetry_dict: dict[str,float]) -> None:
+        for param, value in telemetry_dict.items():
+            if param in self.history:
+                self.history[param].append(value)
+
+    def get_window(self,param:str) -> list[float]:
+        return list(self.history[param])
+
+def _calculate_slope(values: list[float]) -> float:
+    if len(values) < 2:
+        return 0.0
+    total_change = values[-1] - values[0]
+    num_steps = len(values) -1
+
+    return total_change / num_steps 
+
+def _is_trending(param_name:str , values : list[float]) -> bool :
+    slope = _calculate_slope(values)
+    threshold = TREND_RATE_THRESHOLDS[param_name]
+    return abs(slope) > threshold 
+
+    
+
+
+
+
+
+
+
+

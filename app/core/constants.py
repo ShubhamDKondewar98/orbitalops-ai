@@ -3,6 +3,8 @@
 
 CONFIDENCE_THRESHOLD = 0.5
 
+TREND_WINDOW_SIZE = 5
+
 TELEMETRY_THRESHOLDS = {
     "battery_temperature": {
     "nominal": (10, 45),
@@ -68,4 +70,18 @@ CORRELATED_PARAMETERS = {
     "velocity": ["fuel_pressure"],
     "data_transmission_rate": ["signal_strength"],
     "altitude": [],
+}
+
+
+TREND_RATE_THRESHOLDS = {
+    "battery_temperature": 2.0,
+    "battery_charge_level": 2.0,
+    "solar_panel_output": 3.0,
+    "fuel_pressure": 5.0,
+    "signal_strength": 3.0,
+    "data_transmission_rate": 8.0,
+    "onboard_cpu_temperature": 2.0,
+    "altitude": 1.0,
+    "velocity": 0.02,
+    "attitude_stability": 0.3,
 }
