@@ -2,11 +2,14 @@
 from langgraph.graph import StateGraph,END
 from app.agents.state import OrbitalOpsState
 from app.core.constants import CONFIDENCE_THRESHOLD 
+from app.agents.anomaly_detection_agent import make_anomaly_detection_node, TelemetryHistory
 
 
 
 def telemetry_monitoring_node(state:OrbitalOpsState) -> OrbitalOpsState:
     return state
+
+    
 
 def anomaly_detection_node(state:OrbitalOpsState) -> OrbitalOpsState:
     return state 
@@ -42,11 +45,11 @@ def route_after_recommendation(state:OrbitalOpsState) -> str:
     return "alerting"
 
 
-def build_orbitalops_graph():
+def build_orbitalops_graph(history: TelemetryHistory):
     graph = StateGraph(OrbitalOpsState)
 
     graph.add_node("telemetry_monitoring",telemetry_monitoring_node)
-    graph.add_node("anomaly_detection",anomaly_detection_node)
+    graph.add_node("anomaly_detection",make_anomaly_detection_node(history))
     graph.add_node("root_cause_analysis",root_cause_analysis_node)
     graph.add_node("research",research_node)
     graph.add_node("recommendation",recommendation_node)
@@ -88,7 +91,8 @@ def build_orbitalops_graph():
 
 
 if __name__ == "__main__":
-    graph = build_orbitalops_graph()
+    history = TelemetryHistory()
+    graph = build_orbitalops_graph(history)
     #print(graph.get_graph().draw_mermaid())
     image_data = graph.get_graph().draw_mermaid_png()
     with open("graph.png", "wb") as f:
