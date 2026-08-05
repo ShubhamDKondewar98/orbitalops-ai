@@ -18,6 +18,19 @@ NOMINAL_BASELINES = {
     "attitude_stability": 0.3
 }
 
+DRIFT_MAGNITUDES = {
+    "battery_temperature": 0.3,
+    "battery_charge_level": 0.4,
+    "solar_panel_output": 1.0,
+    "fuel_pressure": 1.5,
+    "signal_strength": 0.5,
+    "data_transmission_rate": 2.0,
+    "onboard_cpu_temperature": 0.3,
+    "altitude": 0.2,
+    "velocity": 0.01,
+    "attitude_stability": 0.02,
+}
+
 
 ##  differnet scenario 
 
@@ -58,18 +71,32 @@ class TelemetrySimulator:
         self.active_scenario = scenario_name
         self.scenario_ticks_remaining = duration_ticks
 
+    # def _apply_drift(self) -> None:
+    #     for param in self.current_values:
+    #         drift = random.uniform(-0.3, 0.3)
+    #         self.current_values[param] += drift
+
     def _apply_drift(self) -> None:
         for param in self.current_values:
-            drift = random.uniform(-0.3, 0.3)
+            magnitude = DRIFT_MAGNITUDES[param]
+            drift = random.uniform(-magnitude, magnitude)
             self.current_values[param] += drift
+
+    # def _apply_scenario_pull(self) -> None:
+    #     targets = ANOMALY_SCENARIOS[self.active_scenario]
+    #     for param, target_value in targets.items():
+    #         current = self.current_values[param]
+    #         # move ~25% of the way toward target each tick, plus small noise
+    #         step = (target_value - current) * 0.25
+    #         self.current_values[param] = current + step + random.uniform(-0.5, 0.5)
 
     def _apply_scenario_pull(self) -> None:
         targets = ANOMALY_SCENARIOS[self.active_scenario]
         for param, target_value in targets.items():
             current = self.current_values[param]
-            # move ~25% of the way toward target each tick, plus small noise
             step = (target_value - current) * 0.25
-            self.current_values[param] = current + step + random.uniform(-0.5, 0.5)
+            magnitude = DRIFT_MAGNITUDES[param]
+            self.current_values[param] = current + step + random.uniform(-magnitude, magnitude) 
 
     def _recover_toward_baseline(self) -> None:
         for param, baseline in NOMINAL_BASELINES.items():
