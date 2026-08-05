@@ -36,7 +36,7 @@ def summary_node(state:OrbitalOpsState) -> OrbitalOpsState:
 def route_after_rca(state:OrbitalOpsState) -> str:
     if state.root_cause_analysis.overall_confidence < CONFIDENCE_THRESHOLD:
         return "human_review"
-    return "research"
+    return "recommendation"
 
 
 def route_after_recommendation(state:OrbitalOpsState) -> str:
@@ -61,27 +61,28 @@ def build_orbitalops_graph(history: TelemetryHistory):
     graph.set_entry_point("telemetry_monitoring")
 
     graph.add_edge("telemetry_monitoring","anomaly_detection")
-    graph.add_edge("anomaly_detection","root_cause_analysis")
+    #graph.add_edge("anomaly_detection","root_cause_analysis")
+    graph.add_edge("anomaly_detection", "research")
+    graph.add_edge("research", "root_cause_analysis")
 
     graph.add_conditional_edges(
         "root_cause_analysis",
         route_after_rca,
         {
             "human_review":"human_review",
-            "research":"research"
+             "recommendation": "recommendation",
         }
     )
-
-    graph.add_edge("research","recommendation")
 
     graph.add_conditional_edges(
-        "recommendation",
-        route_after_recommendation,
-        {
-            "human_review":"human_review",
-            "alerting":"alerting"
-        }
-    )
+            "recommendation",
+            route_after_recommendation,
+            {
+                "human_review":"human_review",
+                "alerting":"alerting"
+            }
+        )
+
 
     graph.add_edge("human_review","alerting")
     graph.add_edge("alerting","summary")
