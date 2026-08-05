@@ -5,10 +5,10 @@ CONFIDENCE_THRESHOLD = 0.5
 
 TELEMETRY_THRESHOLDS = {
     "battery_temperature": {
-        "nominal": (10, 45),
-        "warning_ranges": [(45, 60), (-100, 5)],
-        "critical_ranges": [(60, 200), (-100, 0)],
-    },
+    "nominal": (10, 45),
+    "warning_ranges": [(45, 60), (0, 5)],
+    "critical_ranges": [(60, 200), (-100, 0)],
+    }, 
     "battery_charge_level": {
         "nominal": (60, 95),
         "warning_ranges": [(40, 60), (97, 99)],
