@@ -5,6 +5,10 @@ CONFIDENCE_THRESHOLD = 0.5
 
 TREND_WINDOW_SIZE = 5
 
+CHUNK_SIZE = 1500
+CHUNK_OVERLAP = 200 
+
+
 TELEMETRY_THRESHOLDS = {
     "battery_temperature": {
     "nominal": (10, 45),

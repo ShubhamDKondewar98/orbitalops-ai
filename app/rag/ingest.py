@@ -1,6 +1,10 @@
 
 from pathlib import Path 
 from langchain_community.document_loaders import DirectoryLoader , TextLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+from app.core.constants import CHUNK_OVERLAP, CHUNK_SIZE
+
 
 KNOWLEDGE_BASE_PATH = Path("knowledge_base")   # folder name where data lies 
 
@@ -32,7 +36,22 @@ def load_knowledge_base():
 
         docs.extend(folder_docs) 
 
-    return docs      
+    return docs   
+
+
+
+def split_into_chunks(docs):
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size = CHUNK_SIZE,
+        chunk_overlap = CHUNK_OVERLAP,
+        separators=["\n\n", "\n", ". ", " ", ""],
+    )
+
+    return splitter.split_documents(docs)
+
+
+
+
 
 
 
