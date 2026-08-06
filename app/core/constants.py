@@ -8,6 +8,8 @@ TREND_WINDOW_SIZE = 5
 CHUNK_SIZE = 1500
 CHUNK_OVERLAP = 200 
 
+COLLECTION_NAME = "aether1_knowledge"
+
 
 TELEMETRY_THRESHOLDS = {
     "battery_temperature": {
