@@ -26,7 +26,11 @@ def search_knowledge_base(query:str, top_k: int=5):
     return vector_store.similarity_search_with_score(query,k=top_k)
 
 
-
+def format_evidence(retrieved_docs):
+    pieces = []
+    for doc in retrieved_docs:
+        pieces.append(f"[Source: {doc.source_file}]\n{doc.content_snippet}")
+    return "\n\n".join(pieces)
 
 
 

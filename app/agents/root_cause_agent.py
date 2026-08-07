@@ -2,14 +2,10 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from app.agents.state import OrbitalOpsState,RootCauseAnalysis
+from app.rag.retriever import format_evidence
+from app.core.logging_config import get_logger
+logger = get_logger(__name__)
 
-
-def format_evidence(retrived_docs):
-    pieces = []
-
-    for  doc in retrived_docs:
-        pieces.append(f"[Source: {doc.source_file}]\n{doc.content_snippet}")
-    return "\n\n".join(pieces)
 
 
 llm = ChatOpenAI(model="gpt-4o-mini",temperature=0)
