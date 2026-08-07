@@ -6,7 +6,7 @@ from app.agents.anomaly_detection_agent import make_anomaly_detection_node, Tele
 from app.agents.research_agent import research_node
 from app.agents.root_cause_agent import root_cause_analysis_node
 from app.agents.recommendation_agent import recommendation_node
-
+from app.agents.summary_agent import summary_node
 
 def telemetry_monitoring_node(state:OrbitalOpsState) -> OrbitalOpsState:
     return state
@@ -30,8 +30,8 @@ def human_review_node(state:OrbitalOpsState) -> OrbitalOpsState:
 def alerting_node(state:OrbitalOpsState) -> OrbitalOpsState:
     return state
 
-def summary_node(state:OrbitalOpsState) -> OrbitalOpsState:
-    return state
+# def summary_node(state:OrbitalOpsState) -> OrbitalOpsState:
+#     return state
 
 
 def route_after_rca(state:OrbitalOpsState) -> str:
