@@ -3,25 +3,26 @@ from langgraph.graph import StateGraph,END
 from app.agents.state import OrbitalOpsState
 from app.core.constants import CONFIDENCE_THRESHOLD 
 from app.agents.anomaly_detection_agent import make_anomaly_detection_node, TelemetryHistory
-
+from app.agents.research_agent import research_node
+from app.agents.root_cause_agent import root_cause_analysis_node
+from app.agents.recommendation_agent import recommendation_node
 
 
 def telemetry_monitoring_node(state:OrbitalOpsState) -> OrbitalOpsState:
     return state
 
-    
 
-def anomaly_detection_node(state:OrbitalOpsState) -> OrbitalOpsState:
-    return state 
+# def anomaly_detection_node(state:OrbitalOpsState) -> OrbitalOpsState:
+#     return state 
 
-def root_cause_analysis_node(state:OrbitalOpsState) -> OrbitalOpsState:
-    return state
+# def root_cause_analysis_node(state:OrbitalOpsState) -> OrbitalOpsState:
+#     return state
 
-def research_node(state:OrbitalOpsState) -> OrbitalOpsState:
-    return state
+# def research_node(state:OrbitalOpsState) -> OrbitalOpsState:
+#     return state
 
-def recommendation_node(state:OrbitalOpsState) -> OrbitalOpsState:
-    return state
+# def recommendation_node(state:OrbitalOpsState) -> OrbitalOpsState:
+#     return state
 
 def human_review_node(state:OrbitalOpsState) -> OrbitalOpsState:
     return state
