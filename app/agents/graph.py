@@ -8,7 +8,7 @@ from app.agents.root_cause_agent import root_cause_analysis_node
 from app.agents.recommendation_agent import recommendation_node
 from app.agents.summary_agent import summary_node
 from app.agents.human_review_agent import human_review_node
-
+from app.agents.alerting_agent import alerting_node
 
 def telemetry_monitoring_node(state:OrbitalOpsState) -> OrbitalOpsState:
     return state
@@ -29,8 +29,8 @@ def telemetry_monitoring_node(state:OrbitalOpsState) -> OrbitalOpsState:
 # def human_review_node(state:OrbitalOpsState) -> OrbitalOpsState:
 #     return state
 
-def alerting_node(state:OrbitalOpsState) -> OrbitalOpsState:
-    return state
+# def alerting_node(state:OrbitalOpsState) -> OrbitalOpsState:
+#     return state
 
 # def summary_node(state:OrbitalOpsState) -> OrbitalOpsState:
 #     return state
