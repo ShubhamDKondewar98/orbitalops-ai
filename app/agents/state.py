@@ -18,6 +18,7 @@ class TelemetryReading(BaseModel):
     velocity: float
     attitude_stability: float
 
+
 class AnomalyInfo(BaseModel):
     is_anomaly: bool
     severity: Literal["INFO", "WARNING", "CRITICAL"]
@@ -64,7 +65,7 @@ class HumanReviewStatus(BaseModel):
     modified_action: str | None = None
     reviewed_by: str | None = None
     reviewed_at: datetime | None = None
-
+    
 class OrbitalOpsState(BaseModel):
     # Input
     telemetry: TelemetryReading

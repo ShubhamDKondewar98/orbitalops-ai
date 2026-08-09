@@ -14,7 +14,7 @@ COLLECTION_NAME = "aether1_knowledge"
 TELEMETRY_THRESHOLDS = {
     "battery_temperature": {
     "nominal": (10, 45),
-    "warning_ranges": [(45, 60), (0, 5)],
+    "warning_ranges": [(45, 60), (0, 10)],
     "critical_ranges": [(60, 200), (-100, 0)],
     }, 
     "battery_charge_level": {
@@ -90,4 +90,33 @@ TREND_RATE_THRESHOLDS = {
     "altitude": 1.0,
     "velocity": 0.02,
     "attitude_stability": 0.3,
+}
+
+
+
+#  safe midpoints when nothing to worry 
+NOMINAL_BASELINES = {
+    "battery_temperature": 25.0,
+    "battery_charge_level": 78.0,
+    "solar_panel_output": 200.0,
+    "fuel_pressure": 250.0,
+    "signal_strength": -70.0,
+    "data_transmission_rate": 120.0,
+    "onboard_cpu_temperature": 35.0,
+    "altitude": 530.0,
+    "velocity": 7.70,
+    "attitude_stability": 0.3
+}
+
+DRIFT_MAGNITUDES = {
+    "battery_temperature": 0.3,
+    "battery_charge_level": 0.4,
+    "solar_panel_output": 1.0,
+    "fuel_pressure": 1.5,
+    "signal_strength": 0.5,
+    "data_transmission_rate": 2.0,
+    "onboard_cpu_temperature": 0.3,
+    "altitude": 0.2,
+    "velocity": 0.01,
+    "attitude_stability": 0.02,
 }
