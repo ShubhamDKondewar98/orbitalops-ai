@@ -3,11 +3,32 @@ from app.core.constants import TELEMETRY_THRESHOLDS, CORRELATED_PARAMETERS,TREND
 from app.agents.state import OrbitalOpsState, AnomalyInfo
 from collections import deque 
 
+
+
+
+class TelemetryHistory:
+    def __init__(self):
+        self.history: dict[str,deque[float]] = {
+            param: deque(maxlen=TREND_WINDOW_SIZE)
+            for param in TELEMETRY_THRESHOLDS.keys()
+        }
+
+    def add_reading(self,telemetry_dict: dict[str,float]) -> None:
+        for param, value in telemetry_dict.items():
+            if param in self.history:
+                self.history[param].append(value)
+
+    def get_window(self,param:str) -> list[float]:
+        return list(self.history[param])
+
+
 def _is_in_any_range(value: float, ranges: list[tuple[float, float]]) -> bool:
+    #print("inside _is_in_any_range method")
     for range_min, range_max in ranges:
         if range_min <= value <= range_max:
             return True
     return False
+
 
 def _classify_parameter(param_name: str, value: float) -> str:
     thresholds = TELEMETRY_THRESHOLDS[param_name]
@@ -32,26 +53,6 @@ def _is_trending(param_name:str , values : list[float]) -> bool :
     return abs(slope) > threshold 
 
 
-
-
-class TelemetryHistory:
-    def __init__(self):
-        self.history: dict[str,deque[float]] = {
-            param: deque(maxlen=TREND_WINDOW_SIZE)
-            for param in TELEMETRY_THRESHOLDS.keys()
-        }
-
-    def add_reading(self,telemetry_dict: dict[str,float]) -> None:
-        for param, value in telemetry_dict.items():
-            if param in self.history:
-                self.history[param].append(value)
-
-    def get_window(self,param:str) -> list[float]:
-        return list(self.history[param])
-
-
-
-
 def anomaly_detection_node(state: OrbitalOpsState, history: TelemetryHistory) -> OrbitalOpsState:
     telemetry = state.telemetry
     telemetry_dict = telemetry.model_dump(exclude={"timestamp"})
@@ -74,6 +75,9 @@ def anomaly_detection_node(state: OrbitalOpsState, history: TelemetryHistory) ->
 
         is_anomalous_here = threshold_severity != "INFO" or trending
 
+        print(f"{param_name}: value={value:.2f}, threshold={threshold_severity}, trending={trending}, anomalous={is_anomalous_here}")
+
+
         if threshold_severity != "INFO":
             used_threshold = True
         if trending:
@@ -91,8 +95,13 @@ def anomaly_detection_node(state: OrbitalOpsState, history: TelemetryHistory) ->
         detection_method = "both"
     elif used_trend:
         detection_method = "trend"
-    else:
+    elif used_threshold:
         detection_method = "threshold"
+    else:
+        detection_method = "none" 
+
+    print(f"--- FINAL: is_anomaly={len(anomalous_parameters) > 0}, severity={highest_severity}, method={detection_method} ---")
+
 
     state.anomaly_info = AnomalyInfo(
         is_anomaly=len(anomalous_parameters) > 0,

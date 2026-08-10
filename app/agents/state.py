@@ -24,7 +24,7 @@ class AnomalyInfo(BaseModel):
     severity: Literal["INFO", "WARNING", "CRITICAL"]
     anomalous_parameters: list[str]      #    which parameter trigger this 
     correlated_parameters_checked: list[str]   ##  which parameter need to be checked with anomaly parameter 
-    detection_method: Literal["threshold", "trend", "both"]
+    detection_method: Literal["threshold", "trend", "both","none"]
 
 class PossibleCause(BaseModel):
     cause: str
@@ -65,7 +65,7 @@ class HumanReviewStatus(BaseModel):
     modified_action: str | None = None
     reviewed_by: str | None = None
     reviewed_at: datetime | None = None
-    
+
 class OrbitalOpsState(BaseModel):
     # Input
     telemetry: TelemetryReading
