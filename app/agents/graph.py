@@ -1,4 +1,6 @@
 
+from dotenv import load_dotenv
+load_dotenv()
 from langgraph.graph import StateGraph,END
 from app.agents.state import OrbitalOpsState
 from app.core.constants import CONFIDENCE_THRESHOLD 
@@ -9,6 +11,7 @@ from app.agents.recommendation_agent import recommendation_node
 from app.agents.summary_agent import summary_node
 from app.agents.human_review_agent import human_review_node
 from app.agents.alerting_agent import alerting_node
+
 
 def telemetry_monitoring_node(state:OrbitalOpsState) -> OrbitalOpsState:
     return state
@@ -38,14 +41,19 @@ def telemetry_monitoring_node(state:OrbitalOpsState) -> OrbitalOpsState:
 
 def route_after_rca(state:OrbitalOpsState) -> str:
     if state.root_cause_analysis.overall_confidence < CONFIDENCE_THRESHOLD:
-        return "human_review"
-    return "recommendation"
+        return "low_confidence"
+    return "confident"
 
 
 def route_after_recommendation(state:OrbitalOpsState) -> str:
     if state.recommendation.is_critical:
-        return "human_review"
-    return "alerting"
+        return "critical"
+    return "not_critical"
+
+def route_after_human_review(state: OrbitalOpsState) -> str:
+    if state.human_review.decision == "rejected":
+        return "rejected"
+    return "approved"
 
 
 def build_orbitalops_graph(history: TelemetryHistory):
@@ -72,8 +80,8 @@ def build_orbitalops_graph(history: TelemetryHistory):
         "root_cause_analysis",
         route_after_rca,
         {
-            "human_review":"human_review",
-             "recommendation": "recommendation",
+            "low_confidence":"human_review",
+             "confident": "recommendation",
         }
     )
 
@@ -81,13 +89,19 @@ def build_orbitalops_graph(history: TelemetryHistory):
             "recommendation",
             route_after_recommendation,
             {
-                "human_review":"human_review",
-                "alerting":"alerting"
+                "critical":"human_review",
+                "not_critical":"alerting"
             }
         )
 
-
-    graph.add_edge("human_review","alerting")
+    graph.add_conditional_edges(
+        "human_review",
+        route_after_human_review,
+        {
+            "approved": "alerting",
+            "rejected": "summary",
+        },
+    )
     graph.add_edge("alerting","summary")
     graph.add_edge("summary",END)
 
@@ -101,7 +115,7 @@ if __name__ == "__main__":
     image_data = graph.get_graph().draw_mermaid_png()
     with open("graph.png", "wb") as f:
         f.write(image_data)
-    print("Graph successfully saved to graph.png!")
+    print("Graph successfully saved to graph.png")
 
 
 
