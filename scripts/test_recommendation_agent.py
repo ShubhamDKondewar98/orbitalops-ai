@@ -36,3 +36,8 @@ print("Failed stages:", state.failed_stages)
 print("Retry counts:", state.retry_counts)
 print("Is critical:", state.recommendation.is_critical)
 print("Number of actions:", len(state.recommendation.actions))
+
+print("\n--- FULL ACTIONS LIST ---")
+for action in state.recommendation.actions:
+    print(f"[{action.priority}] {action.action}")
+    print(f"  Source: {action.source_reference}")
