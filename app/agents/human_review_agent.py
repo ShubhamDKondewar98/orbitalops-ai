@@ -40,7 +40,6 @@ def human_review_node(state: OrbitalOpsState) -> OrbitalOpsState:
         review_required=True,
         review_reason=reason,
         decision=decision,
-        modified_action=None,
         reviewed_by="test engineer",
         reviewed_at=datetime.now(timezone.utc),
     )
