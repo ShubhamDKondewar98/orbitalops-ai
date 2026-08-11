@@ -30,18 +30,41 @@ rca_prompt = ChatPromptTemplate.from_messages([
 rca_chain =  rca_prompt | structured_llm  
 
 
+MAX_RETRIES = 2
+
+
 def root_cause_analysis_node(state: OrbitalOpsState) -> OrbitalOpsState:
     anomaly = state.anomaly_info
     evidence = format_evidence(state.research_findings.retrieved_documents)
 
-    result = rca_chain.invoke({
-        "anomalous_parameters": ", ".join(anomaly.anomalous_parameters),
-        "severity": anomaly.severity,
-        "correlated_parameters": ", ".join(anomaly.correlated_parameters_checked),
-        "evidence":  evidence ,
-    }) 
+    attempt = 0
+    while attempt <= MAX_RETRIES:
+        try:
+            result = rca_chain.invoke({
+                "anomalous_parameters": ", ".join(anomaly.anomalous_parameters),
+                "severity": anomaly.severity,
+                "correlated_parameters": ", ".join(anomaly.correlated_parameters_checked),
+                "evidence":  evidence ,
+            }) 
 
-    state.root_cause_analysis = result
+            state.root_cause_analysis = result
+            logger.info(f"RCA completed, confidence={result.overall_confidence}")
+            return state
+
+        except Exception as e:
+            attempt += 1
+            logger.warning(f"RCA attempt {attempt} failed: {e}")
+            state.retry_counts["root_cause_analysis"] = attempt
+
+    logger.error("RCA failed after all retries, marking pipeline degraded")
+    state.pipeline_status = "degraded"
+    state.failed_stages.append("root_cause_analysis")
+    state.root_cause_analysis = RootCauseAnalysis(
+        possible_causes=[],
+        correlated_parameters=[],
+        requires_human_review=True,
+        overall_confidence=0.0,
+    )
     return state
 
 
