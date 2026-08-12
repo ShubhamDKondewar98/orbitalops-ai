@@ -41,9 +41,9 @@ def summary_node(state: OrbitalOpsState) -> OrbitalOpsState:
     state.pipeline_status = "completed"
     state.completed_at = datetime.now(timezone.utc)
 
-    print("\n=== MISSION SUMMARY ===")
-    print(result.content)
-    print("========================\n")
+    #print("\n=== MISSION SUMMARY ===")
+    #print(result.content)
+    #print("========================\n")
 
     save_pipeline_run(state)
     return state

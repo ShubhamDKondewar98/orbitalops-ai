@@ -75,7 +75,7 @@ def anomaly_detection_node(state: OrbitalOpsState, history: TelemetryHistory) ->
 
         is_anomalous_here = threshold_severity != "INFO" or trending
 
-        print(f"{param_name}: value={value:.2f}, threshold={threshold_severity}, trending={trending}, anomalous={is_anomalous_here}")
+        #print(f"{param_name}: value={value:.2f}, threshold={threshold_severity}, trending={trending}, anomalous={is_anomalous_here}")
 
 
         if threshold_severity != "INFO":

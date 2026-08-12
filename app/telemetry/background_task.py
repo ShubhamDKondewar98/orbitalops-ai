@@ -62,4 +62,3 @@ if __name__ == "__main__":
     asyncio.run(run_telemetry_loop(max_ticks=15))
 
 
-    

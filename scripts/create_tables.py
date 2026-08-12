@@ -8,4 +8,4 @@ from app.db.models import Base
 engine = create_engine(os.getenv("DATABASE_URL"))
 Base.metadata.create_all(engine)
 
-print("All tables created successfully")
+#print("All tables created successfully")

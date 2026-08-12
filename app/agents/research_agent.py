@@ -15,7 +15,7 @@ def research_node(state: OrbitalOpsState) -> OrbitalOpsState:
     attempt = 0
     while attempt <= MAX_RETRIES:
         try:
-            print(f"query for retriving data {query} ")
+            #print(f"query for retriving data {query} ")
 
             results = search_knowledge_base(query, top_k=5)
 
@@ -31,7 +31,7 @@ def research_node(state: OrbitalOpsState) -> OrbitalOpsState:
                     )
                 )
 
-            print(f"retrived documents are: {retrieved_docs}")
+            #print(f"retrived documents are: {retrieved_docs}")
 
             state.research_findings = ResearchFindings(
                 retrieved_documents=retrieved_docs,

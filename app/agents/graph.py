@@ -56,7 +56,7 @@ def route_after_human_review(state: OrbitalOpsState) -> str:
     return "approved"
 
 
-def build_orbitalops_graph(history: TelemetryHistory):
+def build_orbitalops_graph(history: TelemetryHistory,checkpointer=None):
     graph = StateGraph(OrbitalOpsState)
 
     graph.add_node("telemetry_monitoring",telemetry_monitoring_node)
@@ -105,7 +105,7 @@ def build_orbitalops_graph(history: TelemetryHistory):
     graph.add_edge("alerting","summary")
     graph.add_edge("summary",END)
 
-    return graph.compile()
+    return graph.compile(checkpointer=checkpointer)
 
 
 if __name__ == "__main__":

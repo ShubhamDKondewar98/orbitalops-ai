@@ -85,7 +85,7 @@ def upload_to_qdrant(chunks):
 
     vector_store.add_documents(chunks)
 
-    print(f"Uploaded {len(chunks)} chunks to Qdrant collection '{COLLECTION_NAME}'")
+    #print(f"Uploaded {len(chunks)} chunks to Qdrant collection '{COLLECTION_NAME}'")
 
 
 
