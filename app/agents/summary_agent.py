@@ -2,6 +2,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from app.agents.state import OrbitalOpsState
 from datetime import datetime, timezone
+from app.db.crud import save_pipeline_run
 
 
 summary_llm = ChatOpenAI(model="gpt-4o-mini",temperature=0)
@@ -44,4 +45,5 @@ def summary_node(state: OrbitalOpsState) -> OrbitalOpsState:
     print(result.content)
     print("========================\n")
 
+    save_pipeline_run(state)
     return state
