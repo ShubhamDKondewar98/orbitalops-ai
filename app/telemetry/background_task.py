@@ -58,8 +58,8 @@ async def run_telemetry_loop(max_ticks: int | None = None, force_scenario: str |
 
 if __name__ == "__main__":
     logger.info("Starting telemetry background loop")
-    asyncio.run(run_telemetry_loop(max_ticks=15, force_scenario="thermal_cascade"))
-    #asyncio.run(run_telemetry_loop(max_ticks=15))
+    #asyncio.run(run_telemetry_loop(max_ticks=15, force_scenario="thermal_cascade"))
+    asyncio.run(run_telemetry_loop(max_ticks=15))
 
 
     
