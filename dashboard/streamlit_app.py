@@ -144,3 +144,6 @@ else:
 
 
 
+st.markdown(
+    "[🔍 View detailed agent traces in LangSmith](https://smith.langchain.com/o/24ebadc0-5bed-4a4b-89da-d5e16f4dc31b/projects/p/2a3447fc-e086-44d9-9b86-8445dff2124e?timeModel=%7B%22duration%22%3A%227d%22%7D&runview=traces&tab=0)"
+)
