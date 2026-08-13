@@ -1,6 +1,7 @@
 from datetime import datetime,timezone
 from app.agents.state import OrbitalOpsState,HumanReviewStatus
 from langgraph.types import interrupt
+from app.db.crud import save_pipeline_run
 
 def human_review_node(state: OrbitalOpsState) -> OrbitalOpsState:
     if state.root_cause_analysis.overall_confidence < 0.5:
@@ -36,7 +37,7 @@ def human_review_node(state: OrbitalOpsState) -> OrbitalOpsState:
 
 
     #decision_input =input("\n Approve this? (approve/reject): ").strip().lower()
-
+    save_pipeline_run(state)
     decision_input = interrupt({
         "reason": reason,
         "severity": state.anomaly_info.severity,

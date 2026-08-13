@@ -35,51 +35,90 @@ def save_telemetry_reading(reading):
 def save_pipeline_run(state):
     session = get_db_session()
     try:
-        db_run = PipelineRunDB(
-            run_id=state.run_id,
-            started_at=state.started_at,
-            completed_at=state.completed_at,
-            pipeline_status=state.pipeline_status,
-            severity=state.anomaly_info.severity if state.anomaly_info else None,
-            is_anomaly=state.anomaly_info.is_anomaly if state.anomaly_info else None,
-        )
-        session.add(db_run)
+        existing_run = session.query(PipelineRunDB).filter(PipelineRunDB.run_id == state.run_id).first()
+
+        if existing_run:
+            existing_run.completed_at = state.completed_at
+            existing_run.pipeline_status = state.pipeline_status
+            existing_run.severity = state.anomaly_info.severity if state.anomaly_info else None
+            existing_run.is_anomaly = state.anomaly_info.is_anomaly if state.anomaly_info else None
+        else:   
+            session.add(PipelineRunDB(
+                run_id=state.run_id,
+                started_at=state.started_at,
+                completed_at=state.completed_at,
+                pipeline_status=state.pipeline_status,
+                severity=state.anomaly_info.severity if state.anomaly_info else None,
+                is_anomaly=state.anomaly_info.is_anomaly if state.anomaly_info else None,
+            ))
+            
         session.flush()
 
         if state.anomaly_info:
-            session.add(AnomalyDetectionDb(
-                run_id=state.run_id,
-                severity=state.anomaly_info.severity,
-                anomalous_parameters=state.anomaly_info.anomalous_parameters,
-                correlated_parameters_checked=state.anomaly_info.correlated_parameters_checked,
-                detection_method=state.anomaly_info.detection_method,
-            ))
+            existing = session.query(AnomalyDetectionDb).filter(AnomalyDetectionDb.run_id == state.run_id).first()
+            if existing:
+                existing.severity = state.anomaly_info.severity
+                existing.anomalous_parameters = state.anomaly_info.anomalous_parameters
+                existing.correlated_parameters_checked = state.anomaly_info.correlated_parameters_checked
+                existing.detection_method = state.anomaly_info.detection_method
+
+            else:
+                session.add(AnomalyDetectionDb(
+                    run_id=state.run_id,
+                    severity=state.anomaly_info.severity,
+                    anomalous_parameters=state.anomaly_info.anomalous_parameters,
+                    correlated_parameters_checked=state.anomaly_info.correlated_parameters_checked,
+                    detection_method=state.anomaly_info.detection_method,
+                ))
 
         if state.root_cause_analysis:
-            session.add(RootCauseAnalysisDB(
-                run_id=state.run_id,
-                overall_confidence=state.root_cause_analysis.overall_confidence,
-                requires_human_review=state.root_cause_analysis.requires_human_review,
-                possible_causes=[c.model_dump() for c in state.root_cause_analysis.possible_causes],
-            ))
+            existing = session.query(RootCauseAnalysisDB).filter(RootCauseAnalysisDB.run_id == state.run_id).first()
+            if existing:
+                existing.overall_confidence = state.root_cause_analysis.overall_confidence
+                existing.requires_human_review = state.root_cause_analysis.requires_human_review
+                existing.possible_causes = [c.model_dump() for c in state.root_cause_analysis.possible_causes]
+
+            else:
+                session.add(RootCauseAnalysisDB(
+                    run_id=state.run_id,
+                    overall_confidence=state.root_cause_analysis.overall_confidence,
+                    requires_human_review=state.root_cause_analysis.requires_human_review,
+                    possible_causes=[c.model_dump() for c in state.root_cause_analysis.possible_causes],
+                ))
 
         if state.recommendation:
-            session.add(RecommendationDB(
-                run_id=state.run_id,
-                is_critical=state.recommendation.is_critical,
-                actions=[a.model_dump() for a in state.recommendation.actions],
-                grounded_in=state.recommendation.grounded_in,
-            ))
+            existing = session.query(RecommendationDB).filter(RecommendationDB.run_id == state.run_id).first()
+            if existing:
+                existing.is_critical = state.recommendation.is_critical
+                existing.actions = [a.model_dump() for a in state.recommendation.actions]
+                existing.grounded_in = state.recommendation.grounded_in
+
+            else:
+                session.add(RecommendationDB(
+                    run_id=state.run_id,
+                    is_critical=state.recommendation.is_critical,
+                    actions=[a.model_dump() for a in state.recommendation.actions],
+                    grounded_in=state.recommendation.grounded_in,
+                ))
 
         if state.human_review:
-            session.add(HumanReviewDB(
-                run_id=state.run_id,
-                review_reason=state.human_review.review_reason,
-                decision=state.human_review.decision,
-                modified_action=state.human_review.modified_action,
-                reviewed_by=state.human_review.reviewed_by,
-                reviewed_at=state.human_review.reviewed_at,
-            ))
+            existing = session.query(HumanReviewDB).filter(HumanReviewDB.run_id == state.run_id).first()
+            if existing:
+                existing.review_reason = state.human_review.review_reason
+                existing.decision = state.human_review.decision
+                existing.modified_action = state.human_review.modified_action
+                existing.reviewed_by = state.human_review.reviewed_by
+                existing.reviewed_at = state.human_review.reviewed_at
+
+            else:
+                session.add(HumanReviewDB(
+                    run_id=state.run_id,
+                    review_reason=state.human_review.review_reason,
+                    decision=state.human_review.decision,
+                    modified_action=state.human_review.modified_action,
+                    reviewed_by=state.human_review.reviewed_by,
+                    reviewed_at=state.human_review.reviewed_at,
+                ))
 
         session.commit()
         logger.info(f"Pipeline run {state.run_id} saved to database")

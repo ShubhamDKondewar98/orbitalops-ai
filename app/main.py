@@ -4,15 +4,18 @@ load_dotenv()
 from fastapi import FastAPI
 import asyncio
 from app.telemetry.background_task import run_telemetry_loop
+from app.api import health_routes, telemetry_routes, alerts_routes, approval_routes, reports_routes
 
 
 app = FastAPI(title="OrbitalOps AI")
 
-background_task_handle: asyncio.Task | None = None
+app.include_router(health_routes.router)
+app.include_router(telemetry_routes.router)
+app.include_router(alerts_routes.router)
+app.include_router(approval_routes.router)
+app.include_router(reports_routes.router)
 
-@app.get("/health")
-def health_check():
-    return {"status": "ok am here  to test at run time  "}
+background_task_handle: asyncio.Task | None = None
 
 
 @app.post("/simulation/start")
