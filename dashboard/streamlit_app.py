@@ -2,8 +2,14 @@
 import streamlit as st
 import requests
 import plotly.express as px
+import os
 
-API_URL = "http://localhost:8000"
+#API_URL = "http://localhost:8000"
+
+#API_URL = "http://orbitalops-backend:8000"   #   docker  
+
+API_URL = os.getenv("API_URL", "http://localhost:8000")
+
 
 st.set_page_config(page_title="OrbitalOps AI - Mission Control",layout="wide")
 st.title("🛰️ OrbitalOps AI — Mission Control") 
@@ -99,6 +105,42 @@ if pending:
 
 else:
     st.info("No pending approvals right now.")
+
+st.header("📋 Mission Reports")
+
+alerts_resp = requests.get(f"{API_URL}/alerts")
+all_runs = alerts_resp.json()
+
+
+completed_runs = [r for r in all_runs if r["pipeline_status"] == "completed"]
+
+
+if completed_runs:
+    for run in completed_runs[:10]:
+        completed_time = run['completed_at'][:19].replace("T", " ") if run['completed_at'] else "N/A"
+        label = f"{run['severity']} —  completed {completed_time}"
+        with st.expander(label):
+            report_resp = requests.get(f"{API_URL}/reports/{run['run_id']}")
+            report = report_resp.json()
+
+            rca = report.get("root_cause_analysis")
+            rec = report.get("recommendation")
+            review = report.get("human_review")
+
+            if rca and rca.get("possible_causes"):
+                top_cause = rca["possible_causes"][0]
+                st.write(f"**Root Cause:** {top_cause['cause']}")
+                st.write(f"**Confidence:** {rca['overall_confidence']}")
+
+            if rec:
+                st.write("**Actions Taken:**")
+                for action in rec["actions"]:
+                    st.write(f"- [{action['priority']}] {action['action']}")
+
+            if review:
+                st.write(f"**Human Decision:** {review['decision']} (by {review['reviewed_by']})")
+else:
+    st.info("No completed mission reports yet.")
 
 
 
