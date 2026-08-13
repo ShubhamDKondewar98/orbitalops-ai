@@ -10,50 +10,62 @@ from app.core.logging_config import get_logger
 from datetime import datetime,timezone
 import uuid
 logger = get_logger(__name__)
-
+from app.db.database import get_checkpointer
+from app.db.crud import has_pending_approval
 
 TICK_INTERVAL_SECONDS = 5
 COOLDOWN_TICKS = 12
 
 
-async def run_telemetry_loop(max_ticks: int | None = None, force_scenario: str | None = None):
-    sim = TelemetrySimulator()
+async def run_telemetry_loop(sim=None,max_ticks: int | None = None, force_scenario: str | None = None):
+    if sim is None:
+        sim = TelemetrySimulator()
     history = TelemetryHistory()
-    graph = build_orbitalops_graph(history)
 
-    if force_scenario:
-        sim.trigger_scenario(force_scenario, duration_ticks=10)
+    with get_checkpointer() as checkpointer:
+        graph = build_orbitalops_graph(history , checkpointer=checkpointer)
 
-    cooldown_remaining = 0
-    tick_count = 0
+        if force_scenario:
+            sim.trigger_scenario(force_scenario, duration_ticks=10)
 
-    while True:
+        cooldown_remaining = 0
+        tick_count = 0
 
-        if max_ticks is not None and tick_count >= max_ticks:
-            logger.info(f"Reached max_ticks={max_ticks}, stopping test run")
-            break
+        while True:
 
-        reading = sim.generate_reading()
-        save_telemetry_reading(reading)
+            if max_ticks is not None and tick_count >= max_ticks:
+                logger.info(f"Reached max_ticks={max_ticks}, stopping test run")
+                break
 
-        if cooldown_remaining > 0 :
-            cooldown_remaining -= 1
+            reading = sim.generate_reading()
+            save_telemetry_reading(reading)
 
-        else:
-            state = OrbitalOpsState(
-                telemetry=reading,
-                run_id=str(uuid.uuid4()),
-                started_at=datetime.now(timezone.utc)
-            )
-            state = anomaly_detection_node(state,history)
+            if has_pending_approval():
+                pass
 
-            if state.anomaly_info.is_anomaly:
-                logger.info(f"Anomaly detected, triggered full pipeline: {state.anomaly_info.anomalous_parameters}")
-                graph.invoke(state)
-                cooldown_remaining = COOLDOWN_TICKS
+            if cooldown_remaining > 0 :
+                cooldown_remaining -= 1
 
-        tick_count += 1
-        await asyncio.sleep(TICK_INTERVAL_SECONDS)
+            else:
+                state = OrbitalOpsState(
+                    telemetry=reading,
+                    run_id=str(uuid.uuid4()),
+                    started_at=datetime.now(timezone.utc)
+                )
+                state = anomaly_detection_node(state,history)
+
+                if state.anomaly_info.is_anomaly:
+                    logger.info(f"Anomaly detected, triggered full pipeline: {state.anomaly_info.anomalous_parameters}")
+
+                    config = {"configurable": {"thread_id": state.run_id}}
+                    try:
+                        graph.invoke(state , config=config)
+                    except Exception as e:
+                        logger.error(f"Pipeline execution failed: {e}")
+                    cooldown_remaining = COOLDOWN_TICKS
+
+            tick_count += 1
+            await asyncio.sleep(TICK_INTERVAL_SECONDS)
 
 
 if __name__ == "__main__":

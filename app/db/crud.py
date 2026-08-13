@@ -128,4 +128,12 @@ def save_pipeline_run(state):
         logger.error(f"Failed to save pipeline run: {e}")
     finally:
         session.close() 
-        
+
+
+def has_pending_approval():
+    session = get_db_session()
+    try:
+        pending = session.query(PipelineRunDB).filter(PipelineRunDB.pipeline_status == "running").first()
+        return pending is not None
+    finally:
+        session.close()
